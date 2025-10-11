@@ -1,17 +1,24 @@
 import { useState, useRef, useEffect } from "react";
 import detectEthereumProvider from "@metamask/detect-provider"
 import crowfundingManifest from "../contracts/Crowfunding.json"
-import { ethers, Contract} from "ethers"
+import { ethers, Contract } from "ethers"
 
 export default function Home() {
   const myContract = useRef(null);
+  const [goal, setGoal] = useState("");
 
   useEffect( () => {
     let init = async () => {
       await configurarBlockchain();
+      await cargarDatos();
     }
     init();
   }, [])
+
+  const cargarDatos = async() => {
+    let goalTemporal = await myContract.current.goal();
+    setGoal(goalTemporal.toString());
+  }
 
   const configurarBlockchain = async () => {
     const provider = await detectEthereumProvider();
@@ -21,10 +28,11 @@ export default function Home() {
       let providerEthers = new ethers.providers.Web3Provider(provider);
       let signer = providerEthers.signer;
       myContract.current = new Contract(
-        "0xf9cfae1a05a9bc170d3b8e4a9d20dd4d511396c9",
+        "0x5f033cb778660f07d50e4ed06212c589082493c0",
         crowfundingManifest.abi,
         signer
-      )
+      );
+
     } else {
       console.log("No se puede conectar con el provider")
     }
@@ -32,7 +40,8 @@ export default function Home() {
 
   return (
     <>
-      <h1>Hola!</h1>
+      <h1>Crowfunding</h1>
+      <h2>Goal: {goal}</h2>
     </>
   );
 }
