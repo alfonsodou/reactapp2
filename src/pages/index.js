@@ -26,9 +26,9 @@ export default function Home() {
     if (provider) {
       await provider.request({method: "eth_requestAccounts"});
       let providerEthers = new ethers.providers.Web3Provider(provider);
-      let signer = providerEthers.signer;
+      let signer = providerEthers.getSigner();
       myContract.current = new Contract(
-        "0x5f033cb778660f07d50e4ed06212c589082493c0",
+        "0x67f14fb73805bd5cf12c0cb42113603d346f9a62",
         crowfundingManifest.abi,
         signer
       );
