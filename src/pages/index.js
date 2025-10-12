@@ -6,6 +6,7 @@ import { ethers, Contract } from "ethers"
 export default function Home() {
   const myContract = useRef(null);
   const [goal, setGoal] = useState("");
+  const [contribution, setContribution] = useState(0);
 
   useEffect( () => {
     let init = async () => {
@@ -39,10 +40,27 @@ export default function Home() {
     }
   }
 
+  let contribute = async () => {
+    const tx = await myContract.current.contribute({
+      value: ethers.utils.parseEther(contribution)
+    })
+
+    await tx.wait();
+    setContribution(0);
+  }
+
   return (
     <>
       <h1>Crowfunding</h1>
       <h2>Goal: {goal}</h2>
+      <h2>Contribution</h2>
+      <input 
+        type="text" 
+        value={ contribution } 
+        onChange={ (e) => setContribution(e.target.value) }/>
+      <button onClick={ () => { contribute() }}>
+        Send
+      </button>
     </>
   );
 }
