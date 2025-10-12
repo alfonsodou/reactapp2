@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import detectEthereumProvider from "@metamask/detect-provider"
 import crowfundingManifest from "../contracts/Crowfunding.json"
 import { ethers, Contract } from "ethers"
+import { decodeError } from "@ubiquity-os/ethers-decode-error";
 
 export default function Home() {
   const myContract = useRef(null);
@@ -63,6 +64,18 @@ export default function Home() {
     setTotalContribtion(totalContributionBNB);    
   }
 
+  let askRefund = async () => {
+    try {
+      const tx = await myContract.current.refund();
+      await tx.wait();
+    } catch (err) {
+      const error = decodeError(err);
+      alert(error.error);
+    }
+
+    await cargarDatos();
+  }
+
   return (
     <>
       <h1>Crowfunding</h1>
@@ -77,6 +90,8 @@ export default function Home() {
       <button onClick={ () => { contribute() }}>
         Send
       </button>
+      <h2>Options</h2>
+      <button onClick={ () => {askRefund()}}>Ask refund</button>
     </>
   );
 }
