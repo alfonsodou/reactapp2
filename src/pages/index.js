@@ -6,6 +6,8 @@ import { ethers, Contract } from "ethers"
 export default function Home() {
   const myContract = useRef(null);
   const [goal, setGoal] = useState("");
+  const [totalContribution, setTotalContribtion] = useState(0);
+  const [deadLine, setDeadLine] = useState(0);
   const [contribution, setContribution] = useState(0);
 
   useEffect( () => {
@@ -20,6 +22,14 @@ export default function Home() {
     let goalWei = await myContract.current.goal();
     let goalBNB = ethers.utils.formatEther(goalWei);
     setGoal(goalBNB);
+
+    let totalContributionWei = await myContract.current.totalContribution();
+    let totalContributionBNB = ethers.utils.formatEther(totalContributionWei);
+    setTotalContribtion(totalContributionBNB);
+
+    let deadlineSeconds = await myContract.current.deadLine();
+    let deadlineDate = new Date(deadlineSeconds * 1000);
+    setDeadLine(deadlineDate.toLocaleString());
   }
 
   const configurarBlockchain = async () => {
@@ -47,12 +57,18 @@ export default function Home() {
 
     await tx.wait();
     setContribution(0);
+
+    let totalContributionWei = await myContract.current.totalContribution();
+    let totalContributionBNB = ethers.utils.formatEther(totalContributionWei);
+    setTotalContribtion(totalContributionBNB);    
   }
 
   return (
     <>
       <h1>Crowfunding</h1>
       <h2>Goal: {goal}</h2>
+      <h2>Total Contribution: {totalContribution}</h2>
+      <h2>Deadline: {deadLine}</h2>
       <h2>Contribution</h2>
       <input 
         type="text" 
