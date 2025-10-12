@@ -16,8 +16,9 @@ export default function Home() {
   }, [])
 
   const cargarDatos = async() => {
-    let goalTemporal = await myContract.current.goal();
-    setGoal(goalTemporal.toString());
+    let goalWei = await myContract.current.goal();
+    let goalBNB = ethers.utils.formatEther(goalWei);
+    setGoal(goalBNB);
   }
 
   const configurarBlockchain = async () => {
