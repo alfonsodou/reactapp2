@@ -76,6 +76,18 @@ export default function Home() {
     await cargarDatos();
   }
 
+  let ownerWithdraw = async () => {
+    try {
+      const tx = await myContract.current.ownerWithdraw();
+      await tx.wait();
+    } catch (err) {
+      const error = decodeError(err);
+      alert(error.error);
+    }
+
+    await cargarDatos();
+  }
+
   return (
     <>
       <h1>Crowfunding</h1>
@@ -92,6 +104,7 @@ export default function Home() {
       </button>
       <h2>Options</h2>
       <button onClick={ () => {askRefund()}}>Ask refund</button>
+      <button onClick={ () => {ownerWithdraw()}}>Owner Withdraw</button>
     </>
   );
 }
